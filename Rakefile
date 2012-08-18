@@ -31,7 +31,7 @@ task :init do
   sh('git submodule foreach git checkout master')
   sh('git submodule foreach git pull')
   sh('bundle update')
-  cd 'dexy' do
+  cd 'vendor/dexy' do
     sh('pip install -e .')
   end
   sh('dexy setup')
