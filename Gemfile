@@ -20,12 +20,9 @@ group :support do
   #
   gem 'guard',       ">= 1.0"
   gem 'guard-shell'
+  # lets you use pow to drive live reloading of generated pages
   gem 'guard-livereload'
   gem 'rack'
-  #
-  gem 'guard-yard'
-  gem 'yard',        ">= 0.7"
-  gem 'redcarpet',   ">= 2.1"
 end
 
 # Gems for testing and coverage
