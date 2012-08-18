@@ -1,8 +1,8 @@
 [submodule "dexy"]
-	path = dexy
+	path = vendor/dexy
 	url = https://github.com/mrflip/dexy.git
 [submodule "git-scribe"]
-	path = git-scribe
+	path = vendor/git-scribe
 	url = https://github.com/mrflip/git-scribe.git
 [submodule "big_data_for_chimps"]
 	path = big_data_for_chimps
