@@ -35,15 +35,6 @@ end
 
 
 namespace :init do
-  desc "Retrieve submodules"
-  task :submodules do
-    sh('git submodule update --init')
-    sh('git submodule foreach git checkout master')
-  end
-  desc "Update ruby dependencies"
-  task :bundle do
-    sh('bundle update')
-  end
   desc "Install and initialize dexy"
   task :dexy do
     cd('vendor/dexy'){ sh('pip install -e .') }
@@ -51,7 +42,7 @@ namespace :init do
   end
 end
 desc "Installs prerequisites for book"
-task :init => ['init:submodules', 'init:bundle', 'init:dexy']
+task :init => ['init:dexy']
 
 # --------------------------------------------------------------------------
 #

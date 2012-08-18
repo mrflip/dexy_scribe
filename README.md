@@ -18,9 +18,11 @@ Run these commands:
 
 ```bash
 cd dexy_scribe
+git submodule update --init
+git submodule foreach git checkout master
 gem install bundler
 bundle update
-rake init
+bundle exec rake init
 ```    
 
 They should be fine to re-run if something breaks in the middle.
