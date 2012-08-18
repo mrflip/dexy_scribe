@@ -1,16 +1,15 @@
 require 'logger'
 require 'configliere' ; Settings.use :commandline
 require 'gorillib/model'
-Log = Logger.new($stderr).tap{|log| log.level = Logger::WARN } unless defined?(Log)
+Log = Logger.new($stderr).tap{|log| log.level = Logger::DEBUG } unless defined?(Log)
 
-# load 'tasks/git_scribe.rake'
+load 'tasks/git_scribe.rake'
 
-# Settings.book_file = File.expand_path(
-#   'big_data_for_chimps/ba06-semi_structured_data-d-airline_flights.asciidoc',
-#   File.dirname(__FILE__))
-# Settings.resolve!
-# Log.level   = Logger::DEBUG if Settings.verbose
-# Log.debug{ "configuration: #{Settings.inspect}" }
+Settings.book_file = File.expand_path(
+  'output/big_data_for_chimps/ba06-semi_structured_data-d-airline_flights.asciidoc',
+  File.dirname(__FILE__))
+Settings.resolve!
+Log.debug{ "configuration: #{Settings.inspect}" }
 
 #
 # Top-level rake tasks
@@ -38,14 +37,13 @@ task :init do
   sh('dexy setup')
 end
 
-
-# # --------------------------------------------------------------------------
-# #
-# # Rake Task definitions for book
-# #
+# --------------------------------------------------------------------------
 #
-# HtmlTask.new.tasks
-# PdfTask.new.tasks
-# DocbookTask.new.tasks
-# EpubTask.new.tasks
-# # MobiTask.new.tasks
+# Rake Task definitions for book
+#
+
+HtmlTask.new.tasks
+PdfTask.new.tasks
+DocbookTask.new.tasks
+EpubTask.new.tasks
+# MobiTask.new.tasks

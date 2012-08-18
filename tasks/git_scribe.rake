@@ -3,16 +3,15 @@
 
 require 'configliere'
 require 'gorillib/model'
-
 Settings.use :commandline
-Settings.define   :verbose,      default: true,  flag: 'v', type: :boolean
+
 Settings.define   :force,        default: false, description: "If true, force output generation (ie pretend all dependencies were updated)", type: :boolean
 Settings.define   :book_file,    default: 'book.asciidoc'
 Settings.define   :publish,      default: false,           type: :boolean
 Settings.define   :edition,      default: '0.1'
 Settings.define   :language,     default: 'en'
 Settings.define   :version,      default: '1.0'
-Settings.define   :output_dir,   default: 'output-scribe', description: "Path to the output directory"
+Settings.define   :output_dir,   default: 'final', description: "Path to the output directory"
 Settings.define   :output_types, default: ['docbook', 'html', 'pdf', 'epub', 'mobi', 'site'], type: Array
 Settings.define   :repo_dir,     finally: ->(c){ c[:repo_dir] = Dir.pwd },  type: :filename
 Settings.define   :assets_dir,   default: 'git-scribe', type: :filename
