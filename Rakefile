@@ -1,11 +1,16 @@
 require 'logger'
+require 'configliere' ; Settings.use :commandline
+require 'gorillib/model'
 Log = Logger.new($stderr).tap{|log| log.level = Logger::WARN } unless defined?(Log)
 
-require_relative './tasks/git_scribe.rake'
+# load 'tasks/git_scribe.rake'
 
-Settings.resolve!
-Log.level   = Logger::DEBUG if Settings.verbose
-Log.debug{ "configuration: #{Settings.inspect}" }
+# Settings.book_file = File.expand_path(
+#   'big_data_for_chimps/ba06-semi_structured_data-d-airline_flights.asciidoc',
+#   File.dirname(__FILE__))
+# Settings.resolve!
+# Log.level   = Logger::DEBUG if Settings.verbose
+# Log.debug{ "configuration: #{Settings.inspect}" }
 
 #
 # Top-level rake tasks
@@ -22,7 +27,7 @@ task :clean
 
 task :default => 'gen:html'
 
-task :initial do
+task :init do
   sh('git submodule update --init')
   sh('git submodule foreach git checkout master')
   sh('git submodule foreach git pull')
@@ -32,3 +37,15 @@ task :initial do
   end
   sh('dexy setup')
 end
+
+
+# # --------------------------------------------------------------------------
+# #
+# # Rake Task definitions for book
+# #
+#
+# HtmlTask.new.tasks
+# PdfTask.new.tasks
+# DocbookTask.new.tasks
+# EpubTask.new.tasks
+# # MobiTask.new.tasks

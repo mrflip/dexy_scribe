@@ -225,14 +225,3 @@ module Runners
 
 end
 class BookTask ; include Runners ; end
-
-# --------------------------------------------------------------------------
-#
-# Rake Task definitions for book
-#
-
-HtmlTask.new.tasks
-PdfTask.new.tasks
-DocbookTask.new.tasks
-EpubTask.new.tasks
-# MobiTask.new.tasks
