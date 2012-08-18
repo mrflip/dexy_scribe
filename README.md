@@ -23,7 +23,7 @@ bundle update
 rake init
 ```    
 
-They're safe to re-run if something breaks in the middle.
+They should be fine to re-run if something breaks in the middle.
 
 
 ## Running
