@@ -5,6 +5,7 @@ require 'configliere'
 require 'gorillib/model'
 Settings.use :commandline
 
+Settings.define   :verbose,      default: true,  description: "Output detailed progress"
 Settings.define   :force,        default: false, description: "If true, force output generation (ie pretend all dependencies were updated)", type: :boolean
 Settings.define   :book_file,    default: 'book.asciidoc'
 Settings.define   :publish,      default: false,           type: :boolean
@@ -14,7 +15,7 @@ Settings.define   :version,      default: '1.0'
 Settings.define   :output_dir,   default: 'final', description: "Path to the output directory"
 Settings.define   :output_types, default: ['docbook', 'html', 'pdf', 'epub', 'mobi', 'site'], type: Array
 Settings.define   :repo_dir,     finally: ->(c){ c[:repo_dir] = Dir.pwd },  type: :filename
-Settings.define   :assets_dir,   default: 'git-scribe', type: :filename
+Settings.define   :assets_dir,   default: 'vendor/git-scribe', type: :filename
 Settings.read('./.gitscribe')
 
 #
@@ -44,6 +45,7 @@ class BookTask
   def product_name()     ; File.basename(book_file).gsub(/\..*$/, '') ; end
   def output_file        ; output_path("#{product_name}.#{file_ext}") ; end
   def stylesheet_path(*args) File.expand_path(File.join(Settings.output_dir, 'stylesheets', *args)) ; end
+  def javascript_path(*args) File.expand_path(File.join(Settings.output_dir, 'javascripts', *args)) ; end
 
   def file_ext ; product_type.to_s ; end
 
@@ -159,24 +161,28 @@ end
 class HtmlTask < BookTask
   self.product_type = :html
   def tasks
-    copy_stylesheets_task
+    copy_assets_task
     gen_task(['gen:html:assets']){ sh(* gen_html_cmd) }
     clean_task(['clean:html:assets'])
   end
   #
   def gen_html_cmd
-    asciidoc_cmd(output_file: output_file, attrs: { stylesheet: stylesheet_path('scribe.css') })
+    asciidoc_cmd(output_file: output_file,
+      backend: :html5, config_file: local('etc/asciidoc-html5.conf' ) )
   end
 
   def assets_to_copy
     assets  = []
-    assets += Dir[asset_path('assets', 'config.ru')].map{|from_file|  [local(Settings.output_dir, File.basename(from_file)), from_file] }
+    assets += Dir[asset_path('assets', 'config.ru' )].map{|from_file| [local(Settings.output_dir, File.basename(from_file)), from_file] }
     assets += Dir[asset_path('stylesheets', '*.css')].map{|from_file| [stylesheet_path(File.basename(from_file)), from_file] }
+    assets += Dir[asset_path('javascripts', '*.js' )].map{|from_file| [javascript_path(File.basename(from_file)), from_file] }
     assets
   end
-  def copy_stylesheets_task
+  def copy_assets_task
     directory(stylesheet_path)
+    directory(javascript_path)
     task('clean:html:stylesheets'){ FileUtils.rm_r(stylesheet_path) }
+    task('clean:html:javascripts'){ FileUtils.rm_r(javascript_path) }
     task('gen:html:assets' => directories(assets_to_copy.map{|into, from| File.dirname(into) }.uniq))
     assets_to_copy.map do |into, from|
       file(into => [from, File.dirname(into)]){ cp from, into }
@@ -192,10 +198,13 @@ end
 module Runners
 
   def asciidoc_cmd(*args)
-    options = { attrs: {} }.merge(args.extract_options!)
+    options = { attrs: {}, verbose: Settings.verbose }.merge(args.extract_options!)
     cmd = ['asciidoc']
     options.delete(:attrs).each{|attr, val| cmd << '-a' << "#{attr}=#{val}" }
-    cmd << "--out-file=#{options[:output_file]}" if options[:output_file]
+    cmd <<  "--out-file=#{options[:output_file]}" if options[:output_file]
+    cmd << "--conf-file=#{options[:config_file]}" if options[:config_file]
+    cmd << "--backend=#{  options[:backend]}"     if options[:backend]
+    cmd << "--verbose"                            if options[:verbose]
     cmd += args
     cmd << book_file
     cmd
