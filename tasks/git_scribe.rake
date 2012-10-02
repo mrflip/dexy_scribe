@@ -41,7 +41,7 @@ class BookTask
   def local(*args)       ; File.expand_path(File.join(settings.repo_dir, *args.map(&:to_s))) ; end
   def output_path(*args) ; local(Settings.output_dir, product_type.to_s, *args) ; end
 
-  def book_file          ; local(settings.book_file)                ;  end
+  def book_file          ; local('big_data_for_chimps', settings.book_file) ;  end
   def product_name()     ; File.basename(book_file).gsub(/\..*$/, '') ; end
   def output_file        ; output_path("#{product_name}.#{file_ext}") ; end
   def stylesheet_path(*args) File.expand_path(File.join(Settings.output_dir, 'stylesheets', *args)) ; end

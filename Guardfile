@@ -21,12 +21,11 @@ book_dir = "big_data_for_chimps"
 #   watch(%r{file/path}) { `command(s)` }
 #
 guard 'shell' do
-  # ENV['BOOK_CONTENTS'] = File.expand_path(book_dir)
-  # watch(/#{book_dir}\/([^\/]+)\.asciidoc/) do |match|
-  #   system 'rake', 'book:code:airline_flights'
-  #   system 'rake', 'book:dexy', '--', "--dexy_file=match[0]" and
-  #     system 'rake', '--trace', 'gen:html', '--', "--book_file=output/#{match[0]}"
-  # end
+  ENV['BOOK_CONTENTS'] = File.expand_path(book_dir)
+  watch(/#{book_dir}\/([^\/]+)\.asciidoc/) do |match|
+    system('dexy', '--loglevel', 'DEBUG', '--directory', 'big_data_for_chimps') and  # , '--run', "match[0]"
+      system 'rake', '--trace', 'gen:html', '--', "--book_file=output/#{match[0]}"
+  end
 
   watch(/#{book_dir}\/code\/.+\.rake/){|match|
     # binding.pry
@@ -39,5 +38,5 @@ guard 'shell' do
 end
 
 guard 'livereload' do
-  watch(/(.*).asciidoc/){|match| [ "#{match[1]}.html", "working.html"] }
+  watch(/(.*).asciidoc/){|match| [ "html/#{match[1]}.html", "html/working.html"] }
 end

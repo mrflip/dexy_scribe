@@ -12,7 +12,8 @@ gem 'git-scribe', :path => './vendor/git-scribe'
 
 gem 'yajl-ruby',  :platform => :mri
 
-gem 'coolline'
+gem 'i18n'
+gem 'active_support'
 
 # SciRuby/sciruby
 

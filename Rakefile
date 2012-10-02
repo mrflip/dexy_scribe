@@ -5,15 +5,14 @@ Log = Logger.new($stderr).tap{|log| log.level = Logger::DEBUG } unless defined?(
 ENV['BOOK_CONTENTS'] = File.expand_path('big_data_for_chimps')
 
 load 'tasks/git_scribe.rake'
-
-# Settings.book_file = 'big_data_for_chimps/ba06-semi_structured_data-d-airline_flights.asciidoc'
-
 Settings.resolve!
-Log.debug{ "configuration: #{Settings.inspect}" }
 
 #
 # Top-level rake tasks
 #
+
+# run if no task specified
+task :default => :book
 
 # dummy task to force generation
 task :force
@@ -24,15 +23,13 @@ task :gen
 desc "Remove generated artifacts for all file types"
 task :clean
 
-task :default => 'gen:html'
-
 namespace :book do
   desc "Merge book files with code and its output"
   task :dexy do
-    sh 'dexy', '--loglevel', 'DEBUG', '--directory', 'big_data_for_chimps'  # , '--run', Settings.dexy_file
+    sh 'dexy', '--loglevel', 'DEBUG', '--directory', 'big_data_for_chimps'
   end
 end
-
+task :book => ['book:dexy', 'gen:html']
 
 namespace :init do
   desc "Install and initialize dexy"
